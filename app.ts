@@ -10,7 +10,8 @@ const items: object = {};
 loadTags();
 loadItems();
 
-console.log(items['minecraft:activator_rail']);
+traverseItemsDownward("minecraft:oak_planks");
+
 
 function loadTags() {
     let files: string[] = fs.readdirSync(TAGS_LOCATION);
@@ -97,4 +98,35 @@ function getTag(name: string): Tag {
         tags[name] = newTag;
     }
     return tags[name];
+}
+
+
+function traverseItemsDownward(from: string, maxDepth: number = 10) {
+
+    let allNodes: Item[] = [];
+
+    let depth: number = 0;
+
+    let startNode: Item = getItem(from);
+
+    let nextNodes: Item[] = [startNode]; 
+
+    while (nextNodes.length > 0 && depth < maxDepth) {
+
+        let nextNextNodes: Item[]  = [];
+
+        nextNodes.forEach(node => {
+            node.childItems.forEach(nextNode => {
+                nextNextNodes.push(nextNode);
+                allNodes.push(nextNode);
+            })
+        })
+
+        nextNodes = nextNextNodes;
+
+
+        depth++;
+    }
+
+    console.log(allNodes);
 }
