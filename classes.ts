@@ -2,10 +2,10 @@ class Tag {
 
     name: string;
 
-    childTags: Tag[];
-    parentTags: Tag[];
+    childTags: Tag[] = [];
+    parentTags: Tag[] = [];
 
-    items: Item[];
+    items: Item[] = [];
 
     constructor(name: string) {
         this.name = name;
@@ -23,14 +23,13 @@ class Tag {
 
 }
 
-class Item {
 
     name: string;
 
-    childItems: Item[];
-    parentItems: Item[];
+    childItems: Item[] = [];
+    parentItems: Item[] = [];
 
-    tags: Tag[];
+    tags: Tag[] = [];
 
     constructor(name: string) {
         this.name = name;
@@ -41,4 +40,5 @@ class Item {
         this.childItems.push(child);
     }
 
-} 
+}
+
