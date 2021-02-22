@@ -1,7 +1,5 @@
 import { Item, Tag } from './classes';
-
-const fs = require('fs');
-
+import * as fs from 'fs';
 
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
 const RECIPES_LOCATION: string = './minecraft-data/recipes/';
@@ -19,7 +17,7 @@ function loadTags() {
 
     files.forEach(file => {
         let values: string[] = JSON.parse(
-            fs.readFileSync(TAGS_LOCATION + file)
+            fs.readFileSync(TAGS_LOCATION + file, 'utf-8')
         ).values;
 
         let mainTag = getTag('minecraft:' + file.replace('.json', ''));
@@ -44,7 +42,7 @@ function loadItems() {
 
     files.forEach(file => {
         let item: object = JSON.parse(
-            fs.readFileSync(RECIPES_LOCATION + file)
+            fs.readFileSync(RECIPES_LOCATION + file, 'utf-8')
         );
 
         if (item['type'].startsWith('minecraft:crafting_special'))
@@ -86,8 +84,6 @@ function loadItems() {
 }
 
 function getItem(name: string): Item {
-
-
     if (!(name in items)) {
         let newItem: Item = new Item(name);
         items[name] = newItem;
