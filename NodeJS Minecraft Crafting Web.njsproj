@@ -1907,6 +1907,11 @@
     <Folder Include="minecraft-data\tags\fluids\" />
     <Folder Include="minecraft-data\tags\items\" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="classes.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
     <VisualStudio>

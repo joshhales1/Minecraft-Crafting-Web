@@ -1,4 +1,4 @@
-class Tag {
+export class Tag {
 
     name: string;
 
@@ -23,6 +23,7 @@ class Tag {
 
 }
 
+export class Item {
 
     name: string;
 
