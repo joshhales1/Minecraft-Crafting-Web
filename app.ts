@@ -1,15 +1,15 @@
-import { Item, Tag } from './classes';
+import { Node, Tree } from './classes';
 import * as fs from 'fs';
 
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
 const RECIPES_LOCATION: string = './minecraft-data/recipes/';
 
-const tags: object = {};
-const items: object = {};
+const tree = new Tree();
 
 loadTags();
 loadItems();
 
+console.log(tree);
 
 function loadTags() {
     let files: string[] = fs.readdirSync(TAGS_LOCATION);
@@ -19,19 +19,18 @@ function loadTags() {
             fs.readFileSync(TAGS_LOCATION + file, 'utf-8')
         ).values;
 
-        let mainTag = getTag('minecraft:' + file.replace('.json', ''));
+        let mainTag = tree.getNode('minecraft:' + file.replace('.json', ''), "tag");
 
         values.forEach(value => {
             if (value.startsWith('#')) {
 
                 let noHash = value.replace('#', '');
 
-                mainTag.addChildTag(getTag(noHash));                
+                mainTag.addChild(tree.getNode(noHash, "tag"));                
 
                 return;
             }
-            mainTag.addChildItem(getItem(value));
-            tags[mainTag.name] = mainTag;
+            mainTag.addChild(tree.getNode(value, "item"));
         });      
     });
 }
@@ -47,25 +46,25 @@ function loadItems() {
         if (item['type'].startsWith('minecraft:crafting_special'))
             return;
 
-        let result = getItem(item['result']['item']);
+        let result = tree.getNode(item['result']['item'], "item");
 
         if (item['ingredients'] !== undefined) {
             item['ingredients'].forEach(ingredient => {
-                getItem(ingredient['item']).addChildItem(result);
+                tree.getNode(ingredient['item'], "item").addChild(result);
             });
 
             return;
         }
 
         if (item['ingredient'] !== undefined) {
-            getItem(item['ingredient']['item']).addChildItem(result);
+            tree.getNode(item['ingredient']['item'], "item").addChild(result);
 
             return;
         }
 
         if (item['type'] === 'minecraft:smithing') {
-            getItem(item['base']['item']).addChildItem(result);
-            getItem(item['addition']['item']).addChildItem(result);
+            tree.getNode(item['base']['item'], "item").addChild(result);
+            tree.getNode(item['addition']['item'], "item").addChild(result);
 
             return;
         }
@@ -74,29 +73,10 @@ function loadItems() {
 
             Object.keys(item['key']).forEach(key => {
 
-                getItem(item['key'][key]['item']).addChildItem(result);
+                tree.getNode(item['key'][key]['item'], "item").addChild(result);
             })
 
             return;
         }
     });
-}
-
-function getItem(name: string): Item {
-    if (!(name in items)) {
-        let newItem: Item = new Item(name);
-        items[name] = newItem;
-    }
-    return items[name];
-}
-
-function getTag(name: string): Tag {
-    if (!(name in tags)) {
-        let newTag: Tag = new Tag(name);
-        tags[name] = newTag;
-    }
-    return tags[name];
-}
-
-
 }
