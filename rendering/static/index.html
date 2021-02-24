@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript"
+            src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <h1>Hello world</h1>
+
+    <div id="container" style="width: 500px; height: 5000px;"></div>
+
+    <script>
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                let json = JSON.parse(this.responseText);
+
+                console.log(json);
+
+                // create an array with nodes
+                var nodes = new vis.DataSet(json.nodes);
+
+                // create an array with edges
+                var edges = new vis.DataSet(json.edges);
+
+                // create a network
+                var container = document.getElementById("container");
+                var data = {
+                    nodes: nodes,
+                    edges: edges,
+                };
+                var options = {};
+                var network = new vis.Network(container, data, options);
+            }
+        };
+        xhttp.open("GET", "/data", true);
+        xhttp.send();
+
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import { Tree } from './classes';
 import * as fs from 'fs';
+import * as http from 'http';
 
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
 const RECIPES_LOCATION: string = './minecraft-data/recipes/';
@@ -11,12 +12,24 @@ const tree = new Tree();
 loadTags();
 loadItems();
 
-let result = tree.traverseDown(tree.getNode('minecraft:diamond'), 10);
-result.allVisitedNodes.forEach(x => {
-    console.log(x.name);
-})
+fs.writeFileSync('./rendering/static/vis-data.json', tree.generateVisJSON());
 
-//console.log(tree.getNode("minecraft:oak_planks"));
+http.createServer(function (req, res) {
+    console.log(req.url);
+
+    if (req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.write(fs.readFileSync('./rendering/static/index.html'), 'utf-8');
+        res.end();
+    } else if (req.url === '/data') {
+        res.writeHead(200, { 'Content-Type': 'text/json' });
+        res.write(fs.readFileSync('./rendering/static/vis-data.json'), 'utf-8');
+        res.end();
+    }
+
+
+
+}).listen(8080);
 
 function loadTags() {
     let files: string[] = fs.readdirSync(TAGS_LOCATION);

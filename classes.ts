@@ -23,9 +23,12 @@ class Node {
 }
 
 export class Tree {
-    allNodes: Node[] = [];
+    allNodes = {};
 
     getNode(name: string, type?: string): Node {
+
+        name = name.replace('minecraft:', '');
+
         if (!(name in this.allNodes)) {
             if (type === undefined)
                 throw new Error('Type parameter illegally unset.');
@@ -79,8 +82,32 @@ export class Tree {
         return returnValue;
     }
 
-    traverseUp(startNode: Node, maxDepth: number) {
+    
+    generateVisJSON(): string {
 
+        let newJson = {
+            nodes: [],
+            edges: []
+        };
+
+
+        Object.keys(this.allNodes).forEach(_node => {
+
+            let node: Node = this.allNodes[_node];
+
+            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(_node), label: node.name });
+
+            newJson[node.name] = { children: [], parents: [] };
+
+            newJson[node.name].children = [];
+            newJson[node.name].parents = [];
+
+            node.children.forEach(child => {
+                newJson.edges.push({ from: Object.keys(this.allNodes).indexOf(_node), to: Object.keys(this.allNodes).indexOf(child.name)});
+            });
+        });
+
+        return JSON.stringify(newJson);
     }
 }
 

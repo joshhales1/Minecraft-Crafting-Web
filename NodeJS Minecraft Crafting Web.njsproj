@@ -1887,6 +1887,9 @@
     <Content Include="minecraft-data\tags\items\wool.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="rendering\static\index.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -1906,6 +1909,8 @@
     <Folder Include="minecraft-data\tags\entity_types\" />
     <Folder Include="minecraft-data\tags\fluids\" />
     <Folder Include="minecraft-data\tags\items\" />
+    <Folder Include="rendering\" />
+    <Folder Include="rendering\static\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="classes.ts">
