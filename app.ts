@@ -1,4 +1,4 @@
-import { Node, Tree } from './classes';
+import { Tree } from './classes';
 import * as fs from 'fs';
 
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
