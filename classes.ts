@@ -61,6 +61,11 @@ export class Tree {
             node.children.forEach(child => {
                 newJson.edges.push({ from: Object.keys(this.allNodes).indexOf(_node), to: Object.keys(this.allNodes).indexOf(child.name)});
             });
+
+            if (newJson[node.name].children.length === 0)
+                delete newJson[node.name].children;
+            if (newJson[node.name].parents.length === 0)
+                delete newJson[node.name].parents;
         });
 
         return JSON.stringify(newJson);
