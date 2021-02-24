@@ -46,26 +46,16 @@ export class Tree {
             edges: []
         };
 
+        Object.keys(this.allNodes).forEach(nodeName => {
 
-        Object.keys(this.allNodes).forEach(_node => {
+            let node: Node = this.allNodes[nodeName];
 
-            let node: Node = this.allNodes[_node];
-
-            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(_node), label: node.name });
-
-            newJson[node.name] = { children: [], parents: [] };
-
-            newJson[node.name].children = [];
-            newJson[node.name].parents = [];
+            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(nodeName), label: node.name });
 
             node.children.forEach(child => {
-                newJson.edges.push({ from: Object.keys(this.allNodes).indexOf(_node), to: Object.keys(this.allNodes).indexOf(child.name)});
+                newJson.edges.push({ from: Object.keys(this.allNodes).indexOf(nodeName), to: Object.keys(this.allNodes).indexOf(child.name) });
             });
-
-            if (newJson[node.name].children.length === 0)
-                delete newJson[node.name].children;
-            if (newJson[node.name].parents.length === 0)
-                delete newJson[node.name].parents;
+                
         });
 
         return JSON.stringify(newJson);
