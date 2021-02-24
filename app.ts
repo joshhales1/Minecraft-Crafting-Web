@@ -39,7 +39,7 @@ function loadTags() {
             fs.readFileSync(TAGS_LOCATION + file, 'utf-8')
         ).values;
 
-        let mainTag = tree.getNode('minecraft:' + file.replace('.json', ''), "tag");
+        let mainTag = tree.getNode(file.replace('.json', ''), "tag");
 
         values.forEach(value => {
 
