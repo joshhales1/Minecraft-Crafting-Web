@@ -38,50 +38,6 @@ export class Tree {
         }
         return this.allNodes[name];
     }
-
-    traverseDown(startNode: Node, maxDepth: number): ITraversalResult {
-
-        console.log('started');
-
-        let depth: number = 0;
-        let nextNodes: Node[] = [startNode];
-
-        let returnValue: ITraversalResult = {
-
-            allVisitedNodes: [],
-            allChildlessNodes: [],
-            allParentlessNodes: [],            
-
-        };
-
-        while (nextNodes.length > 0 && depth++ < maxDepth) {
-
-            let nextNextNodes: Node[] = [];
-
-            nextNodes.forEach(node => {
-
-                if (node.children.length === 0 && !returnValue.allChildlessNodes.includes(node))
-                    returnValue.allChildlessNodes.push(node);
-                if (node.parents.length === 0 && !returnValue.allParentlessNodes.includes(node))
-                    returnValue.allParentlessNodes.push(node);
-
-                node.children.forEach(childNode => {
-
-                    if (nextNextNodes.includes(childNode) || returnValue.allVisitedNodes.includes(childNode))
-                        return;
-
-                    nextNextNodes.push(childNode);
-
-                    returnValue.allVisitedNodes.push(childNode);
-
-                });
-            });
-
-            nextNodes = nextNextNodes;
-        }
-        return returnValue;
-    }
-
     
     generateVisJSON(): string {
 
@@ -109,12 +65,5 @@ export class Tree {
 
         return JSON.stringify(newJson);
     }
-}
-
-interface ITraversalResult {
-    allVisitedNodes: Node[],
-
-    allChildlessNodes: Node[],
-    allParentlessNodes: Node[]
 }
 
