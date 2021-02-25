@@ -1890,6 +1890,7 @@
     <Content Include="rendering\static\index.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="rendering\static\vis-data.js" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
