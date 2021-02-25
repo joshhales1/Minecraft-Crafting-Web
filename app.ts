@@ -4,15 +4,15 @@ import * as fs from 'fs';
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
 const RECIPES_LOCATION: string = './minecraft-data/recipes/';
 
-const INGREDIENT_RESULT_TYPES: string[] = ['minecraft:smelting', 'minecraft:stonecutting'];
+const ENTITY_DROP_LOCATIONS: string[] = ['./minecraft-data/loot_tables/entities/', './minecraft-data/loot_tables/entities/sheep/', './minecraft-data/loot_tables/chests/', './minecraft-data/loot_tables/chests/village/'];
+
 const FURNACE_CLONES = ['minecraft:blasting', 'minecraft:campfire_cooking', 'minecraft:smoking'];
 
 const tree = new Tree();
 
 loadTags();
 loadItems();
-
-console.log(tree);
+loadEntityDrops();
 
 fs.writeFileSync('./rendering/static/vis-data.js', 'const tree = JSON.parse(\'' + tree.generateVisJSON() + '\')');
 
@@ -110,5 +110,47 @@ function loadItems() {
                 tree.getNode(singleIngredient['tag'], 'tag').addChild(result, ingredient.type);
             });         
         });
+    });
+}
+
+function loadEntityDrops() {
+    ENTITY_DROP_LOCATIONS.forEach(location => {
+        let files: string[] = fs.readdirSync(location);
+
+        files.forEach(file => {
+            if (fs.lstatSync(location + file).isDirectory())
+                return;           
+
+            let data = JSON.parse(fs.readFileSync(location + file, 'utf-8'));
+
+            if (data.pools === undefined)
+                return;
+
+            let newItem = tree.getNode(file.replace('.json', '') + (location.endsWith('sheep/') ? "_sheep" : ""), 'entity');            
+
+            data.pools.forEach(pool => {
+                pool.entries.forEach(entry => {
+
+                    if (entry['type'] === 'minecraft:empty' || entry['type'] === 'minecraft:loot_table')
+                        return;
+
+
+                    if (entry['type'] === 'minecraft:item') {
+                        tree.getNode(entry['name'], "item").addParent(newItem, "drop");
+                        return;
+                    }
+
+                    if (entry['type'] === 'minecraft:tag') {
+                        tree.getNode(entry['name'], "tag").addParent(newItem, "drop");
+                        return;
+                    }
+                });
+
+            });
+
+            
+
+        });
+
     });
 }

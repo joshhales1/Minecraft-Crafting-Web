@@ -12,35 +12,92 @@
 </head>
 <body>
 
-    <div id="container" style="width: 500px; height: 500px;"></div>
+    <div id="mynetwork" style="width: 10000px; height: 10000px;"></div>
     <script defer>
+        function startNetwork(data) {
+            const container = document.getElementById("mynetwork");
+            const options = {
+                physics: {
+                    adaptiveTimestep: true,
+                    barnesHut: {
+                        gravitationalConstant: -8000,
+                        springConstant: 0.04,
+                        springLength: 95
+                    },
+                    stabilization: {
+                        iterations: 987
+                    }
+                },
+                layout: {
+                    improvedLayout: false
+                }}
+            new vis.Network(container, data, options);
+        }
 
-        // create an array with nodes
-        var nodes = new vis.DataSet(tree.nodes);
+        
 
-        // create an array with edges
-        var edges = new vis.DataSet(tree.edges);
+        const nodes = new vis.DataSet(tree.nodes);
+        const edges = new vis.DataSet(tree.edges);
 
-        // create a network
-        var container = document.getElementById("container");
-        var data = {
-            nodes: nodes,
-            edges: edges,
-        };
-        var options = {
-            layout: {
-                improvedLayout: false
+        /*
+        const nodes = new vis.DataSet([
+            { id: 1, label: "Eric Cartman", "color": "#ff0000" },
+            { id: 2, label: "Stan Marsh" },
+            { id: 3, label: "Wendy Testaburger" },
+            { id: 4, label: "Mr Mackey" },
+            { id: 5, label: "Sharon Marsh" },
+        ]);
+        
+        const edges = new vis.DataSet([
+            {
+                from: 1,
+                to: 2,
+                arrows: "to, from",
+                color: { color: "red" }
             },
-            physics: {
-                stabilization:
-                {
-                    iterations: 500
-                }
-            }
-        };
+            {
+                from: 1,
+                to: 3,
+                arrows: "to, from",
+                color: { color: "red" },
+            },
+            {
+                from: 2,
+                to: 3,
+                arrows: "to, from",
+                color: { color: "#000000" },
+            },
+            {
+                from: 5,
+                to: 2,
+                arrows: "to",
+                color: { color: "green" },
+            },
+            {
+                from: 4,
+                to: 1,
+                arrows: "to",
+                color: { color: "blue" },
+            },
+            {
+                from: 4,
+                to: 2,
+                arrows: "to",
+                color: { color: "blue" },
+            },
+            {
+                from: 4,
+                to: 3,
+                arrows: "to",
+                color: { color: "blue" },
+            },
+        ]);*/
 
-        var network = new vis.Network(container, data, options);
 
+        const nodesView = new vis.DataView(nodes);
+        const edgesView = new vis.DataView(edges);
+
+        startNetwork({ nodes: nodesView, edges: edgesView });
     </script>
     
 </body>

@@ -26,6 +26,22 @@ class Node {
         parent.children.push(newLink);
         this.parents.push(newLink);
     }
+
+    static nameToFriendlyName(name): string {
+        let splitName: string[] = name.split("_");
+
+        for (let i = 0; i < splitName.length; i++) {
+            splitName[i] = splitName[i][0].toUpperCase() + splitName[i].substring(1, splitName[i].length);
+        }
+
+
+
+
+        
+
+        return splitName.join(" ");
+
+    }
 }
 
 class Link {
@@ -69,7 +85,7 @@ export class Tree {
 
             let node: Node = this.allNodes[nodeName];
 
-            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(nodeName), label: node.name, color: Colors.nodeTypes[node.type] });
+            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(nodeName), label: Node.nameToFriendlyName(node.name), color: Colors.nodeTypes[node.type] });
 
             node.children.forEach(child => {
 
@@ -99,9 +115,9 @@ class Colors {
     }
 
     static nodeTypes = {
-        "tag": "#ff00ff",
-        "item": "#0000ff",
-        "entity": "#00ff00",
+        "tag": "#ffccff",
+        "item": "#ccccff",
+        "entity": "#ccffcc",
     }
 }
 
