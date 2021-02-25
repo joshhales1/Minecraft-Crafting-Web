@@ -3,22 +3,41 @@ class Node {
 
     type: string;
 
-    children: Node[] = [];
-    parents: Node[] = [];
+    children: Link[] = [];
+    parents: Link[] = [];
 
     constructor(name: string, type: string) {
         this.name = name;
         this.type = type;
     }
 
-    addChild(child: Node) {
-        child.parents.push(this);
-        this.children.push(child);
+    addChild(child: Node, type: string) {
+
+        let newLink: Link = new Link(type, this, child);
+
+        child.parents.push(newLink);
+        this.children.push(newLink);
     }
 
-    addParent(parent: Node) {
-        parent.children.push(this);
-        this.parents.push(parent);
+    addParent(parent: Node, type: string) {
+
+        let newLink: Link = new Link(type, parent, this);
+
+        parent.children.push(newLink);
+        this.parents.push(newLink);
+    }
+}
+
+class Link {
+    type: string;
+
+    parent: Node;
+    child: Node;
+
+    constructor(type: string, parent: Node, child: Node) {
+        this.type = type;
+        this.child = child;
+        this.parent = parent;
     }
 }
 
@@ -50,15 +69,39 @@ export class Tree {
 
             let node: Node = this.allNodes[nodeName];
 
-            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(nodeName), label: node.name });
+            newJson.nodes.push({ id: Object.keys(this.allNodes).indexOf(nodeName), label: node.name, color: Colors.nodeTypes[node.type] });
 
             node.children.forEach(child => {
-                newJson.edges.push({ from: Object.keys(this.allNodes).indexOf(nodeName), to: Object.keys(this.allNodes).indexOf(child.name) });
+
+                newJson.edges.push({
+                    from: Object.keys(this.allNodes).indexOf(nodeName),
+                    to: Object.keys(this.allNodes).indexOf(child.child.name),
+                    arrows: "to",
+                    color: { color: Colors.methodTypes[child.type] },
+                });
             });
                 
         });
 
         return JSON.stringify(newJson);
+    }
+}
+
+class Colors {
+    static methodTypes = {
+        "minecraft:crafting_shapeless": "#0000ff",
+        "minecraft:crafting_shaped": "#0000ff",
+        "minecraft:smithing": "#ffffff",
+        "minecraft:smelting": "#ff8800",
+        'minecraft:stonecutting': "#666666",
+        "tag": "#ff00ff",
+        "drop": "#00ff00", 
+    }
+
+    static nodeTypes = {
+        "tag": "#ff00ff",
+        "item": "#0000ff",
+        "entity": "#00ff00",
     }
 }
 

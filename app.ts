@@ -4,12 +4,15 @@ import * as fs from 'fs';
 const TAGS_LOCATION: string = './minecraft-data/tags/items/';
 const RECIPES_LOCATION: string = './minecraft-data/recipes/';
 
-const INGREDIENT_RESULT_TYPES: string[] = ['minecraft:smelting', 'minecraft:stonecutting', 'minecraft:blasting', 'minecraft:campfire_cooking', 'minecraft:smoking'];
+const INGREDIENT_RESULT_TYPES: string[] = ['minecraft:smelting', 'minecraft:stonecutting'];
+const FURNACE_CLONES = ['minecraft:blasting', 'minecraft:campfire_cooking', 'minecraft:smoking'];
 
 const tree = new Tree();
 
 loadTags();
 loadItems();
+
+console.log(tree);
 
 fs.writeFileSync('./rendering/static/vis-data.js', 'const tree = JSON.parse(\'' + tree.generateVisJSON() + '\')');
 
@@ -29,12 +32,12 @@ function loadTags() {
 
                 let noHash = value.replace('#', '');
 
-                mainTag.addParent(tree.getNode(noHash, "tag"));                
+                mainTag.addParent(tree.getNode(noHash, "tag"), "tag");                
 
                 return;
             }
 
-            mainTag.addParent(tree.getNode(value, "item"));
+            mainTag.addParent(tree.getNode(value, "item"), "tag");
         });      
     });
 }
@@ -47,63 +50,65 @@ function loadItems() {
             fs.readFileSync(RECIPES_LOCATION + file, 'utf-8')
         );
 
-        if (item['type'].startsWith('minecraft:crafting_special'))
+        if (item['type'].startsWith('minecraft:crafting_special') || FURNACE_CLONES.includes(item['type']))
             return;
 
-        let formattedIngredients: object[] = [];
+        let formattedIngredients = [];
 
         let result = tree.getNode(item['result']['item'] ?? item['result'], "item");
 
         if (item['type'] === 'minecraft:crafting_shapeless') {
 
             item['ingredients'].forEach(ingredient => {
-                formattedIngredients.push(ingredient);
+                formattedIngredients.push({ ingredient: ingredient, type: item['type'] });
             });
-
         }       
 
         else if (item['type'] === 'minecraft:smithing') {
 
-            formattedIngredients.push(item['base']);
-            formattedIngredients.push(item['addition']);
-
+            formattedIngredients.push({ ingredient: item['base'], type: item['type'] });
+            formattedIngredients.push({ ingredient: item['addition'], type: item['type'] });
         }
 
         else if (item['type'] === 'minecraft:crafting_shaped') {
 
             Object.keys(item['key']).forEach(key => {
-                formattedIngredients.push(item['key'][key]);
+                formattedIngredients.push({ ingredient: item['key'][key], type: item['type'] });
+                
             });
         }
 
-        else if (INGREDIENT_RESULT_TYPES.includes(item['type'])) {
+        else if (item['type'] === "minecraft:smelting") {
 
-            formattedIngredients.push(item['ingredient']);
+            formattedIngredients.push({ ingredient: item['ingredient'], type: item['type'] });            
+        }
+
+        else if (item['type'] === "minecraft:stonecutting") {
+
+            formattedIngredients.push({ ingredient: item['ingredient'], type: item['type'] });
         }
 
         formattedIngredients.forEach(ingredient => {
 
             let rawArray = [];
 
-            if (!Array.isArray(ingredient)) {
-                rawArray = [ingredient];
+            if (!Array.isArray(ingredient.ingredient)) {
+                rawArray = [ingredient.ingredient];
             } else {
-                rawArray = ingredient;
+                rawArray = ingredient.ingredient;
             }
 
             rawArray.forEach(singleIngredient => {
 
                 if (singleIngredient['item'] !== undefined) {
 
-                    tree.getNode(singleIngredient['item'], 'item').addChild(result);
+                    tree.getNode(singleIngredient['item'], 'item').addChild(result, ingredient.type);
 
                     return;
                 }
 
-                tree.getNode(singleIngredient['tag'], 'tag').addChild(result);
-            });
-
-         
+                tree.getNode(singleIngredient['tag'], 'tag').addChild(result, ingredient.type);
+            });         
         });
     });
 }
