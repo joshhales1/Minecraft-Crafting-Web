@@ -112,12 +112,14 @@ class Colors {
         'minecraft:stonecutting': "#666666",
         "tag": "#ff00ff",
         "drop": "#00ff00", 
+        "chest": "#ff99ff",
     }
 
     static nodeTypes = {
         "tag": "#ffccff",
         "item": "#ccccff",
         "entity": "#ccffcc",
+        "structure": "#ff99ff"
     }
 }
 
