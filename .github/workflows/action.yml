@@ -16,3 +16,5 @@ jobs:
       run: yarn install
     - name: tsc
       uses: icrawl/action-tsc@v1
+    - name: test
+      run: node app.js
