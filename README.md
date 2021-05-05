@@ -23,5 +23,7 @@ The current version is shown below:
 
 ![A Minecraft production tree](./rendering/static/result.png)
 
+![A Minecraft production tree key](./rendering/key.png)
+
 ## Method
 A NodeJS program reads through the JSON which was extracted from the (currently 1.16.2) .jar Minecraft file and connects the correct nodes. It then saves the file and a browser is used to render the resulting graph structure with vis.js ready to be saved and downloaded from the canvas. The rendering process can take several minutes. 
