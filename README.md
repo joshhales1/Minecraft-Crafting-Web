@@ -16,8 +16,7 @@ This version does not *yet* show:
 - Villager trading
 - Connections between loot tables
     - For example, `guardians` drop `prismarine_shards`, but also a random fish from the `fish` loot table. This graph only shows the "true" drops so the fish is missing.
-- Fishing   
-- A key for the colors on the graph
+- Fishing
 
 The current version is shown below:
 
